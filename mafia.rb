@@ -42,7 +42,7 @@ Messages = {
                   "#{Irc.color(:red)}#{Bold}Mafiosi#{Bold}#{Color}: type "\
                   "#{Irc.color(:red)}/msg %{bot} kill nickname#{Color} to vote to kill",
 
-    :votedLynch => "#{Irc.color(:teal)}%{player}#{Color} voted to lynch #{Irc.color(:yellow)}%{suspect}#{Color}",
+    :votedLynch => "#{Irc.color(:brown)}%{player}#{Color} voted to lynch #{Irc.color(:brown)}%{suspect}#{Color}",
     :votedKill => "%{player} voted to kill %{victim}",
     # :lynchMafia => "%{player}, the WOLF, dies!",
     # :lynchDetective => "%{player} dies, retards",
@@ -100,7 +100,7 @@ Messages = {
                   # "Wolves, type /msg %{bot} kill <player> to cast a vote to kill that player\n"\
                   # "Seers, type /msg %{bot} check <player> to see their occupation\n"\
 
-    :votedLynch => "#{Irc.color(:teal)}%{player}#{Color} voted to lynch #{Irc.color(:yellow)}%{suspect}#{Color}",
+    :votedLynch => "#{Irc.color(:brown)}%{player}#{Color} voted to lynch #{Irc.color(:brown)}%{suspect}#{Color}",
     # :votedLynch => "%{player} voted to kill %{suspect}",
     :votedKill => "%{player} voted to kill %{victim}",
     # :lynchMafia => "%{player}, the WOLF, dies!",
@@ -632,7 +632,7 @@ class MafiaGame
         return
       end
 
-      notice checker.nick, "Ok"
+      notice saver.nick, "Ok"
       @saves[saveeCanonical] = 1 + ((@saves.has_key? saveeCanonical) ? @saves[saveeCanonical] : 0)
     }
   end
