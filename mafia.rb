@@ -340,7 +340,13 @@ class MafiaGame
         return false 
       end
 
-      @playersInit.push p
+      pdata = Object.new
+      class << pdata
+        attr_accessor :nick
+      end
+      pdata.nick = p.nick.to_s
+
+      @playersInit.push pdata
       msg @texts[:addPlayerSuccess] % {
         :player => p.nick
       }
@@ -517,7 +523,7 @@ class MafiaGame
           next if found == nil
           next if dead.downcase == k
           notice k, @texts[:detectiveCheck] % {
-            :player => v[:player],
+            :player => v[:player].nick,
             :role => @texts[v[:role]]
           }
         }
