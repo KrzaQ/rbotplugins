@@ -4,7 +4,7 @@ A collection of [rbot](http://ruby-rbot.org/) plugins written by me, for me.
 
 # Installation
 - - -
-Put the `plugin.rb` in the `rbot/plugins` directory (usually `~/.rbot/plugins/`
+Put the `plugin.rb` in the `rbot/plugins` directory (usually `~/.rbot/plugins/`)
 
 # License
 - - -
