@@ -7,7 +7,8 @@ Messages = {
     :doctor => "#{Irc.color(:orange)}#{Bold}Medic#{Bold}#{Color}",
     :normal => "#{Bold}Regular guy#{Bold}",
     :initGame => "#{Irc.color(:red)}#{Bold}Mafia#{Bold}#{Color} game in %{channel} "\
-                 "will begin in #{Irc.color(:red)}%{seconds}#{Color} seconds.",
+                 "will begin in #{Irc.color(:red)}%{seconds}#{Color} seconds.\n"\
+                 "type #{Irc.color(:green)}jo#{Color} to join",
     :initGameSuccess => "#{Irc.color(:red)}#{Bold}Mafia#{Bold}#{Color} begins.",
     :initGameFailure => "#{Irc.color(:red)}#{Bold}Mafia#{Bold}#{Color} didn\'t begin, not enough players :(",
     :addPlayerSuccess => "#{Irc.color(:green)}#{Bold}%{player}#{Bold}#{Color} joined the game",
@@ -70,7 +71,8 @@ Messages = {
     :doctor => "#{Irc.color(:orange)}#{Bold}Medic#{Bold}#{Color}",
     :normal => "#{Bold}Villager#{Bold}",
     :initGame => "#{Irc.color(:red)}#{Bold}Weregame#{Bold}#{Color} in %{channel} "\
-                 "will begin in #{Irc.color(:red)}%{seconds}#{Color} seconds.",
+                 "will begin in #{Irc.color(:red)}%{seconds}#{Color} seconds."\
+                 "type #{Irc.color(:green)}jo#{Color} to join",
     :initGameSuccess => "#{Irc.color(:red)}#{Bold}Weregame#{Bold}#{Color} begins.",
     :initGameFailure => "#{Irc.color(:red)}#{Bold}Weregame#{Bold}#{Color} didn\'t begin, not enough players :(",
     :addPlayerSuccess => "#{Irc.color(:green)}#{Bold}%{player}#{Bold}#{Color} joined the game",
@@ -129,7 +131,9 @@ Messages = {
     :doctor => "#{Irc.color(:purple)}#{Bold}Dumbledore#{Bold}#{Color}",
     :normal => "#{Bold}Auror#{Bold}",
 
-    :initGame => "#{Irc.color(:red)}#{Bold}Death Eater#{Bold}#{Color} game in %{channel} will begin in #{Irc.color(:red)}%{seconds}#{Color} seconds.",
+    :initGame => "#{Irc.color(:red)}#{Bold}Death Eater#{Bold}#{Color} game in %{channel} will "\
+                 "begin in #{Irc.color(:red)}%{seconds}#{Color} seconds."\
+                 "type #{Irc.color(:green)}jo#{Color} to join",
     :initGameSuccess => "#{Irc.color(:red)}#{Bold}Death Eater#{Bold}#{Color} begins.",
     :initGameFailure => "#{Irc.color(:red)}#{Bold}Death Eater#{Bold}#{Color} didn\'t begin, not enough players :(",
 
@@ -224,8 +228,6 @@ class MafiaGame
     Thread.new {
 
       begin
-        srand (Time.now.to_f * 1000).to_i
-
         msg @texts[:initGame] % {
           :channel => @channel,
           :seconds => Timers[:gameStart]
@@ -249,7 +251,10 @@ class MafiaGame
 
           msg @texts[:initGameSuccess]
 
+          srand Time.now.to_i
+
           @playersInit.shuffle!
+          rand(100).times { @playersInit.shuffle! }
 
           numberOfMafiaMembers = mafiosiPerPlayers @playersInit.size
           detectives = detectivesPerPlayers @playersInit.size
@@ -515,7 +520,7 @@ class MafiaGame
 
 
     @sync.synchronize {
-      dead = @vote[:votes].max_by{|k,v| v}
+      dead = @vote[:votes].to_a.shuffle.max_by{|i| i[1]}
 
       handleChecks = lambda { |dead|
         @checks.each { |k,v|
