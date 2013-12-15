@@ -71,7 +71,7 @@ Messages = {
     :doctor => "#{Irc.color(:orange)}#{Bold}Medic#{Bold}#{Color}",
     :normal => "#{Bold}Villager#{Bold}",
     :initGame => "#{Irc.color(:red)}#{Bold}Weregame#{Bold}#{Color} in %{channel} "\
-                 "will begin in #{Irc.color(:red)}%{seconds}#{Color} seconds."\
+                 "will begin in #{Irc.color(:red)}%{seconds}#{Color} seconds.\n"\
                  "type #{Irc.color(:green)}jo#{Color} to join",
     :initGameSuccess => "#{Irc.color(:red)}#{Bold}Weregame#{Bold}#{Color} begins.",
     :initGameFailure => "#{Irc.color(:red)}#{Bold}Weregame#{Bold}#{Color} didn\'t begin, not enough players :(",
@@ -132,7 +132,7 @@ Messages = {
     :normal => "#{Bold}Auror#{Bold}",
 
     :initGame => "#{Irc.color(:red)}#{Bold}Death Eater#{Bold}#{Color} game in %{channel} will "\
-                 "begin in #{Irc.color(:red)}%{seconds}#{Color} seconds."\
+                 "begin in #{Irc.color(:red)}%{seconds}#{Color} seconds.\n"\
                  "type #{Irc.color(:green)}jo#{Color} to join",
     :initGameSuccess => "#{Irc.color(:red)}#{Bold}Death Eater#{Bold}#{Color} begins.",
     :initGameFailure => "#{Irc.color(:red)}#{Bold}Death Eater#{Bold}#{Color} didn\'t begin, not enough players :(",
