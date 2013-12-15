@@ -43,7 +43,7 @@ class AlertPlugin < Plugin
   	c.users.each { |u| users.push u.nick unless ignored.include? u.nick.downcase }
 
 
-    users.sort!
+    users = users.sort_by { |u| u.downcase }
 
     users.each_slice(15).to_a.each{ |u|
       m.reply "#{u.join(', ')}!"
