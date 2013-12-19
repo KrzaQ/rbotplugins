@@ -30,17 +30,17 @@ class AlertPlugin < Plugin
   end
 
   def alert(m, p)
-  	c = @bot.channels.find{|c| c.name.downcase == m.channel.to_s.downcase }
+    c = @bot.channels.find{|c| c.name.downcase == m.channel.to_s.downcase }
 
-  	if c == nil
-  		return
-  	end
+    if c == nil
+      return
+    end
 
-  	users = []
+    users = []
 
     ignored = getIgnoredNicks
 
-  	c.users.each { |u| users.push u.nick unless ignored.include? u.nick.downcase }
+    c.users.each { |u| users.push u.nick unless ignored.include? u.nick.downcase }
 
 
     users = users.sort_by { |u| u.downcase }
@@ -62,6 +62,16 @@ class AlertPlugin < Plugin
     m.reply "Done."
   end
 
+  def disableNick(m, p)
+    addIgnoredNick p[:nick].downcase
+    m.reply "Done."
+  end
+
+  def enableNick(m, p)
+    removeIgnoredNick p[:nick].downcase
+    m.reply "Done."
+  end
+
 end
 
 
@@ -71,4 +81,6 @@ plugin = AlertPlugin.new
 plugin.map 'alert', :private => false, :action => :alert, :auth_path => 'alert'
 plugin.map 'alert disable', :action => :disable
 plugin.map 'alert enable', :action => :enable
+plugin.map 'alert disable :nick', :action => :disableNick, :auth_path => 'alert'
+plugin.map 'alert enable :nick', :action => :enableNick, :auth_path => 'alert'
 plugin.default_auth('alert', false)
