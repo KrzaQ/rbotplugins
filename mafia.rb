@@ -812,13 +812,13 @@ class MafiaPlugin < Plugin
         case m.message
         when /^jo$/i
           @game.addPlayer m.source
-        when /^kill ([A-Za-z0-9\-\_\^\[\]\\]+)$/i
+        when /^kill ([A-Za-z0-9\-\_\^\[\]\|\\]+)$/i
           @game.vote m, $1 if m.channel.to_s.size == 0
-        when /^vote ([A-Za-z0-9\-\_\^\[\]\\]+)$/i
+        when /^vote ([A-Za-z0-9\-\_\^\[\]\|\\]+)$/i
           @game.vote m, $1 if m.channel.to_s.size > 0
-        when /^check ([A-Za-z0-9\-\_\^\[\]\\]+)$/i
+        when /^check ([A-Za-z0-9\-\_\^\[\]\|\\]+)$/i
           @game.checkPlayer m.source, $1 if m.channel.to_s.size == 0
-        when /^protect ([A-Za-z0-9\-\_\^\[\]\\]+)$/i
+        when /^protect ([A-Za-z0-9\-\_\^\[\]\|\\]+)$/i
           @game.savePlayer m.source, $1 if m.channel.to_s.size == 0
         end
       }
