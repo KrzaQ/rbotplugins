@@ -793,7 +793,22 @@ class MafiaPlugin < Plugin
   end
 
   def help(plugin, topic="")
-    "MafiaPlugin"
+    case topic
+    when 'commands'
+      [
+        'day (all): vote <nick> to vote to kill <nick>',
+        'night (healer): protect <nick> to protect <nick>',
+        'night (mafia): kill <nick> to vote to kill <nick>',
+        'night (detective): check <nick> to check <nick>',
+        'day commands need to me said in the channel',
+        'night commands need to be PM-ed to the bot'
+      ].join('; ')
+    else
+      'Mafia game. !mafia, !weregame and !voldemort to start the game ' +
+      'for mafia/weregame/voldemort, respectively (same rules, different texts). ' +
+      '!mafia force start to avoid waiting for more players. ' +
+      'Other help topics: commands'
+    end
   end
 
   def message(m)
