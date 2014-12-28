@@ -42,7 +42,7 @@ class QuotePlugin < Plugin
         error e.backtrace.join("\n")
       end
     }
-  end...
+  end
 
   def addquote(source, channel, quote)
     @lists[channel.to_s] = Array.new if(!@lists.has_key?(channel.to_s))
@@ -222,6 +222,8 @@ class QuotePlugin < Plugin
               end
             end
           when (/^delquote\s+(#\S+)\s+(\d+)$/)
+            m.reply "Sorry mate, I cannot into deletions"
+            return
             channel = $1
             num = $2.to_i
             if(@bot.auth.allow?("delquote", m.source, m.replyto))
@@ -325,6 +327,8 @@ class QuotePlugin < Plugin
               end
             end
           when (/^delquote\s+(\d+)$/)
+            m.reply "sorry mate, I cannot into deleting quotes"
+            return
             num = $1.to_i
             if(@bot.auth.allow?("delquote", m.source, m.replyto))
               if(delquote(m.target, num))
