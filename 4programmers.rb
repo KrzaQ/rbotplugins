@@ -51,17 +51,22 @@ class FourPLister < Plugin
 		})
 		d = JSON.parse raw
 		
-		d.select{ |el|
+		topics = d.select{ |el|
 			t = (el['tags'] & @bot.config['fourplister.sought_tags']).size > 0
 			f = @bot.config['fourplister.sought_fora'].include? el['forum']
 			#p = @bot.config['fourplister.sought_phrases'].include? el['forum']
 			t || f
-		}.each do |el|
+		}.sort{ |a,b| a['id'] <=> b['id'] }
+		
+		topics.each do |el|
 			notify_channels el
 		end
 
-		@registry['last_id'] = d.map{|el| el['id'] }.max unless d.size < 1
-		@registry.flush
+		if topics.size > 0
+			@registry['last_topic'] = topics.last
+			@registry['last_id'] = topics.last['id']
+			@registry.flush
+		end
 	end
 
 	def notify_channels(el)
@@ -78,7 +83,18 @@ class FourPLister < Plugin
 		@bot.say '#4programmers', msg
 		@bot.say '#4programmers', parts[:url]
 	end
+
+	def get_last(m, params)
+		t = @registry['last_topic']
+		if t
+			notify_channels t
+		else
+			m.reply 'no last known topic'
+		end
+	end
 end
 
 plugin = FourPLister.new
+
+plugin.map '4p last', action: :get_last
 
