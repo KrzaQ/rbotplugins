@@ -62,11 +62,9 @@ class FourPLister < Plugin
 			notify_channels el
 		end
 
-		if topics.size > 0
-			@registry['last_topic'] = topics.last
-			@registry['last_id'] = topics.last['id']
-			@registry.flush
-		end
+		@registry['last_topic'] = topics.last unless topics.size < 1
+		@registry['last_id'] = d.map{ |el| el['id'] }.max unless d.size < 1
+		@registry.flush
 	end
 
 	def notify_channels(el)
