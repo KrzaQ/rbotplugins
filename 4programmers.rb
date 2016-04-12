@@ -56,14 +56,14 @@ class FourPLister < Plugin
 			f = @bot.config['fourplister.sought_fora'].include? el['forum']
 			#p = @bot.config['fourplister.sought_phrases'].include? el['forum']
 			t || f
-		}.sort{ |a,b| a['id'] <=> b['id'] }
+		}.sort{ |a,b| a['post_id'] <=> b['post_id'] }
 		
 		topics.each do |el|
 			notify_channels el
 		end
 
 		@registry['last_topic'] = topics.last unless topics.size < 1
-		@registry['last_id'] = d.map{ |el| el['id'] }.max unless d.size < 1
+		@registry['last_id'] = d.map{ |el| el['post_id'] }.max unless d.size < 1
 		@registry.flush
 	end
 
@@ -71,7 +71,7 @@ class FourPLister < Plugin
 		p el
 		parts = {
 			topic: "#{Bold}#{Irc.color(:green)}%{subject}#{Irc.color}#{Bold}" % el,
-			url: "#{Irc.color(:red)}http://4programmers.net/%{id}#{Irc.color}" % el,
+			url: "#{Irc.color(:red)}http://4programmers.net/%{post_id}#{Irc.color}" % el,
 			tags: "(#{Irc.color(:darkgray)}%s#{Irc.color})" % el['tags'].join(', '),
 			forum: "#{Bold}#{Irc.color(:darkgray)}[%{forum}]#{Irc.color}#{Bold}" % el
 		}
