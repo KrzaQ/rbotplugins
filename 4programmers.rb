@@ -1,10 +1,9 @@
 require 'json'
 require 'httpclient'
-require 'thread'
-
-Link = 'http://4programmers.net/api/topic.php?key=%{api_key}&start_id=%{last_id}'
 
 class FourPLister < Plugin
+	
+	@@link = 'http://4programmers.net/api/topic.php?key=%{api_key}&start_id=%{last_id}'
 
 	Config.register Config::FloatValue.new 'fourplister.refresh_delay',
 		default: 1.0,
@@ -21,6 +20,9 @@ class FourPLister < Plugin
 	Config.register Config::ArrayValue.new 'fourplister.sought_phrases',
 		default: ['c++'],
 		desc: 'Phrases'
+
+	Config.register Config::StringValue.new 'fourplister.api_key',
+		desc: 'Api Key'
 
 	def initialize
 		super
@@ -43,7 +45,7 @@ class FourPLister < Plugin
 
 	def refresh
 		c = HTTPClient.new
-		raw = c.get_content(Link % {
+		raw = c.get_content(@@link % {
 			api_key: @bot.config['fourplister.api_key'],
 			last_id: @registry['last_id']
 		})
@@ -79,3 +81,4 @@ class FourPLister < Plugin
 end
 
 plugin = FourPLister.new
+
