@@ -46,7 +46,7 @@ class FourPLister < Plugin
 	def refresh
 		c = HTTPClient.new
 		raw = c.get_content(@@link % {
-			api_key: @bot.config['fourplister.api_key'],
+			api_key: @key,
 			last_id: @registry['last_id']
 		})
 		d = JSON.parse raw
