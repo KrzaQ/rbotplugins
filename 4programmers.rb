@@ -63,7 +63,7 @@ class FourPLister < Plugin
 		end
 
 		@registry['last_topic'] = topics.last unless topics.size < 1
-		@registry['last_id'] = d.map{ |el| el['post_id'] }.max unless d.size < 1
+		@registry['last_id'] = d.map{ |el| el['topic_id'] }.max unless d.size < 1
 		@registry.flush
 	end
 
