@@ -1,5 +1,6 @@
 require 'json'
 require 'httpclient'
+require 'cgi'
 
 class FourPLister < Plugin
 	
@@ -56,7 +57,12 @@ class FourPLister < Plugin
 			f = @bot.config['fourplister.sought_fora'].include? el['forum']
 			#p = @bot.config['fourplister.sought_phrases'].include? el['forum']
 			t || f
-		}.sort{ |a,b| a['post_id'] <=> b['post_id'] }
+		}.map{ |el|
+			el['subject'] = CGI.unescapeHTML el['subject']
+			el
+		}.sort{ |a,b|
+			a['post_id'] <=> b['post_id']
+		}
 		
 		topics.each do |el|
 			notify_channels el
