@@ -11,7 +11,7 @@ class FourPLister < Plugin
 		desc: 'Refresh delay'
 	
 	Config.register Config::ArrayValue.new 'fourplister.sought_tags',
-		default: ['c++', 'c', 'ruby', 'd', 'qt', 'asm'],
+		default: ['c++', 'cpp',  'c', 'ruby', 'd', 'qt', 'asm'],
 		desc: 'Tags'
 
 	Config.register Config::ArrayValue.new 'fourplister.sought_fora',
