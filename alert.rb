@@ -7,8 +7,8 @@ class AlertPlugin < Plugin
   end
 
   def help(plugin, topic="")
-    "Alerts people in two modes: opt-in and opt-out. Three modes are supported: enabled, default, disabled.\n"\
-    "type !alert disable/default/disable to explicitly choose. Default: default."
+    "Alerts people. Three user modes are supported: enabled (all alerts), default (default), disabled (no alerts).\n"\
+    "Type !alert enable/default/disable to explicitly choose. Default: default."
   end
 
   def setNickMode(chan, nick, mode)
