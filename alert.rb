@@ -41,7 +41,7 @@ class AlertPlugin < Plugin
     elsif mode == 'optout'
       users = users.reject{ |u| getNickMode(m.channel, u) == :disabled }
     else
-      m.reply 'Invalid mode sleected. Allowed: optin, optout.'
+      m.reply 'Invalid mode selected. Allowed: optin, optout.'
       return
     end
 
