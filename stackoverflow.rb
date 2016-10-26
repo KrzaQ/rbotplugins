@@ -4,7 +4,7 @@ require 'zlib'
 require 'stringio'
 
 class StackOverflow < Plugin
-	@@api_link = 'https://api.stackexchange.com/2.2/questions?order=desc&sort=creation&site=stackoverflow&pagesize=100'
+	@@api_link = 'https://api.stackexchange.com/2.2/questions?key=%{key}&order=desc&sort=creation&site=stackoverflow&pagesize=100'
 
 	Config.register Config::FloatValue.new 'stackoverflower.refresh_delay',
 		default: 12.0,
@@ -14,10 +14,15 @@ class StackOverflow < Plugin
 		default: 1024,
 		desc: 'Displayed queue'
 
+	Config.register Config::StringValue.new 'stackoverflower.api_key',
+		desc: 'Api Key'
+
 	def initialize
 		super
 		# @registry['last_id'] = 278348 unless @registry.has_key? 'last_id'
 		@registry['displayed'] = [] unless @registry.has_key? 'displayed'
+
+		@key = @bot.config['stackoverflower.api_key']
 
 		Thread.new {
 			sleep 45
@@ -25,6 +30,8 @@ class StackOverflow < Plugin
 		}
 
 		@done = false
+
+		@status = :on
 	end
 
 	def start_timer
@@ -41,6 +48,8 @@ class StackOverflow < Plugin
 	end
 
 	def refresh
+		return if @status == :off
+
 		qs = get_questions['items']
 
 		disp = @registry['displayed']
@@ -86,7 +95,7 @@ class StackOverflow < Plugin
 	end
 
 	def get_questions
-		zipped = HTTPClient.new.get_content @@api_link
+		zipped = HTTPClient.new.get_content(@@api_link % {key: @key})
 		json = Zlib::GzipReader.new(StringIO.new(zipped)).read
 		d = JSON.parse json
 		d
@@ -109,6 +118,19 @@ class StackOverflow < Plugin
 		@bot.say '#4programmers', parts[:url]
 	end
 
+	def turn_on(m, p)
+		@status = :on
+  		m.okay
+	end
+
+	def turn_off(m, p)
+		@status = :off
+   		m.okay
+	end
+
 end
 
 plugin = StackOverflow.new
+
+plugin.map 'so on', :action => :turn_on, :auth_path => 'so'
+plugin.map 'so off', :action => :turn_off, :auth_path => 'so'
