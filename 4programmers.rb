@@ -27,7 +27,7 @@ class FourPLister < Plugin
 
 	def initialize
 		super
-		@registry['last_id'] = 269685 unless @registry.has_key? 'last_id'
+		@registry['last_id'] = 278348 unless @registry.has_key? 'last_id'
 
 		@key = @bot.config['fourplister.api_key']
 
@@ -35,9 +35,17 @@ class FourPLister < Plugin
 			sleep 45
 			start_timer
 		}
+
+		@done = false
+	end
+
+	def cleanup
+		@bot.say '#4programmers', '4programmers cleanup = done'
+		@done = true
 	end
 
 	def start_timer
+		return if @done
 		@timer = @bot.timer.add_once(@bot.config['fourplister.refresh_delay'].to_f){
 			start_timer
 		}
