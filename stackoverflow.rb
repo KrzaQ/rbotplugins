@@ -2,6 +2,7 @@ require 'json'
 require 'httpclient'
 require 'zlib'
 require 'stringio'
+require 'cgi'
 
 class StackOverflow < Plugin
 	@@api_link = 'https://api.stackexchange.com/2.2/questions?key=%{key}&order=desc&sort=creation&site=stackoverflow&pagesize=100'
@@ -104,7 +105,7 @@ class StackOverflow < Plugin
 	def notify_channels(el)
 		p el
 		parts = {
-			topic: "#{Bold}#{Irc.color(:darkgray)}%{title}#{Irc.color}#{Bold}" % el,
+			topic: "#{Bold}#{Irc.color(:teal)}%{title}#{Irc.color}#{Bold}" % { title: CGI.unescapeHTML el['title'] },
 			url: "#{Irc.color(:red)}%{link}#{Irc.color}" % { link: el['link'].sub(/(https?:\/\/stackoverflow.com\/questions\/\d+\/).+/, '\1') },
 			tags: "(#{Irc.color(:darkgray)}%s#{Irc.color})" % el['tags'].join(', '),
 			# forum: "#{Bold}#{Irc.color(:darkgray)}[%{forum}]#{Irc.color}#{Bold}" % el
