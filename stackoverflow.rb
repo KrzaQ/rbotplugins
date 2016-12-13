@@ -77,18 +77,24 @@ class StackOverflow < Plugin
 	def is_wanted_question(q)
 
 		# p q['title']
+		return false if q['tags'].include? 'cocos2d'
+		return false if q['tags'].include? 'android'
 
 		return true if q['tags'].include? 'c++98'
 		return true if q['tags'].include? 'c++03'
 		return true if q['tags'].include? 'c++11'
 		return true if q['tags'].include? 'c++14'
 		return true if q['tags'].include? 'c++17'
+		return true if q['tags'].include? 'c++1z'
+		return true if q['tags'].include? 'd'
 
 		if q['tags'].include? 'c++'
 			return true if q['owner']['reputation'].to_i >= 150
 			return true if q['tags'].include? 'language-lawyer'
+			return true if q['tags'].include? 'metaprogramming'
 			return true if q['tags'].include? 'qt'
 			return true if q['tags'].include? 'templates'
+			return true if q['tags'].include? 'template-meta-programming'
 			return true if q['tags'].include? 'variadic-templates'
 		end
 
@@ -105,7 +111,7 @@ class StackOverflow < Plugin
 	def notify_channels(el)
 		p el
 		parts = {
-			topic: "#{Bold}#{Irc.color(:teal)}%{title}#{Irc.color}#{Bold}" % { title: CGI.unescapeHTML el['title'] },
+			topic: "#{Bold}#{Irc.color(:teal)}%{title}#{Irc.color}#{Bold}" % { title: CGI.unescapeHTML(el['title']) },
 			url: "#{Irc.color(:red)}%{link}#{Irc.color}" % { link: el['link'].sub(/(https?:\/\/stackoverflow.com\/questions\/\d+\/).+/, '\1') },
 			tags: "(#{Irc.color(:darkgray)}%s#{Irc.color})" % el['tags'].join(', '),
 			# forum: "#{Bold}#{Irc.color(:darkgray)}[%{forum}]#{Irc.color}#{Bold}" % el
@@ -133,5 +139,6 @@ end
 
 plugin = StackOverflow.new
 
-plugin.map 'so on', :action => :turn_on, :auth_path => 'so'
-plugin.map 'so off', :action => :turn_off, :auth_path => 'so'
+plugin.map 'so on', :action => :turn_on, :auth_path => 'stackoverflow'
+plugin.map 'so off', :action => :turn_off, :auth_path => 'stackoverflow'
+plugin.default_auth('stackoverflow', false)
