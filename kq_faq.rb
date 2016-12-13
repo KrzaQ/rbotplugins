@@ -8,7 +8,7 @@ class KQFAQ < Plugin
 
   def help(plugin, topic="")
     "FAQ plugin. Will answer questions on topic in the database. \n"\
-    "type '!kqfaq set foo bar baz' to set 'foo' to 'bar baz'"
+    "type '!faq set foo bar baz' to set 'foo' to 'bar baz'"
   end
 
   def set(m, p)
@@ -25,18 +25,35 @@ class KQFAQ < Plugin
     m.okay
   end
 
-  def message(m)
+  def list(m, p)
     h = @registry[m.channel.downcase]
-    possible_question = m.message.scan(/\w+/).first
-    return unless h.has_key? possible_question
-
-    m.reply h[possible_question]
+    m.reply h.keys.sort.join(", ")
   end
+
+  def get(m, p)
+    h = @registry[m.channel.downcase]
+    if h.has_key? p[:question]
+      m.reply h[p[:question]]
+    else
+      m.reply 'unknown question: %s' % p[:question]
+    end
+  end
+
+  # def message(m)
+  #   h = @registry[m.channel.downcase]
+  #   possible_question = m.message.scan(/\w+/).first
+  #   return unless h.has_key? possible_question
+
+  #   m.reply h[possible_question]
+  # end
 
 end
 
 plugin = KQFAQ.new
 
-plugin.map 'kqfaq set :question *answer', :action => :set, :auth_path => 'kqfaq'
-plugin.map 'kqfaq unset :question', :action => :unset, :auth_path => 'kqfaq'
-plugin.default_auth('kqfaq', false)
+plugin.map 'faq set :question *answer', :action => :set, :auth_path => 'faq::admin'
+plugin.map 'faq unset :question', :action => :unset, :auth_path => 'faq::admin'
+plugin.map 'faq list', :action => :list
+plugin.map 'faq :question', :action => :get
+plugin.map 'faq  get :question', :action => :get
+plugin.default_auth('faq::admin', false)
