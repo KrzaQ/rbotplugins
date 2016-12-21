@@ -4,7 +4,7 @@ require 'cgi'
 
 class FourPLister < Plugin
 	
-	@@link = 'http://4programmers.net/api/topic.php?key=%{api_key}&start_id=%{last_id}'
+	@@link = 'https://4programmers.net/api/topic.php?key=%{api_key}&start_id=%{last_id}'
 
 	Config.register Config::FloatValue.new 'fourplister.refresh_delay',
 		default: 1.0,
@@ -85,7 +85,7 @@ class FourPLister < Plugin
 		p el
 		parts = {
 			topic: "#{Bold}#{Irc.color(:green)}%{subject}#{Irc.color}#{Bold}" % el,
-			url: "#{Irc.color(:red)}http://4programmers.net/%{post_id}#{Irc.color}" % el,
+			url: "#{Irc.color(:red)}https://4programmers.net/Forum/%{post_id}#{Irc.color}" % el,
 			tags: "(#{Irc.color(:darkgray)}%s#{Irc.color})" % el['tags'].join(', '),
 			forum: "#{Bold}#{Irc.color(:darkgray)}[%{forum}]#{Irc.color}#{Bold}" % el
 		}
