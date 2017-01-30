@@ -58,18 +58,18 @@ class FourPLister < Plugin
 			api_key: @key,
 			last_id: @registry['last_id']
 		})
-		d = JSON.parse raw
+		d = JSON.parse(raw, symbolize_names: true)
 		
 		topics = d.select{ |el|
-			t = (el['tags'] & @bot.config['fourplister.sought_tags']).size > 0
-			f = @bot.config['fourplister.sought_fora'].include? el['forum']
+			t = (el[:tags] & @bot.config['fourplister.sought_tags']).size > 0
+			f = @bot.config['fourplister.sought_fora'].include? el[:forum]
 			#p = @bot.config['fourplister.sought_phrases'].include? el['forum']
 			t || f
 		}.map{ |el|
-			el['subject'] = CGI.unescapeHTML el['subject']
+			el[:subject] = CGI.unescapeHTML el[:subject]
 			el
 		}.sort{ |a,b|
-			a['post_id'] <=> b['post_id']
+			a[:post_id] <=> b[:post_id]
 		}
 		
 		topics.each do |el|
@@ -77,7 +77,7 @@ class FourPLister < Plugin
 		end
 
 		@registry['last_topic'] = topics.last unless topics.size < 1
-		@registry['last_id'] = d.map{ |el| el['topic_id'] }.max unless d.size < 1
+		@registry['last_id'] = d.map{ |el| el[:topic_id] }.max unless d.size < 1
 		@registry.flush
 	end
 
@@ -86,7 +86,7 @@ class FourPLister < Plugin
 		parts = {
 			topic: "#{Bold}#{Irc.color(:green)}%{subject}#{Irc.color}#{Bold}" % el,
 			url: "#{Irc.color(:red)}https://4programmers.net/Forum/%{post_id}#{Irc.color}" % el,
-			tags: "(#{Irc.color(:darkgray)}%s#{Irc.color})" % el['tags'].join(', '),
+			tags: "(#{Irc.color(:darkgray)}%s#{Irc.color})" % el[:tags].join(', '),
 			forum: "#{Bold}#{Irc.color(:darkgray)}[%{forum}]#{Irc.color}#{Bold}" % el
 		}
 
