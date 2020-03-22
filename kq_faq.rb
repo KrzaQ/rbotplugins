@@ -54,6 +54,8 @@ plugin = KQFAQ.new
 plugin.map 'faq set :question *answer', :action => :set, :auth_path => 'faq::admin'
 plugin.map 'faq unset :question', :action => :unset, :auth_path => 'faq::admin'
 plugin.map 'faq list', :action => :list
+plugin.map 'faq', :action => :list
 plugin.map 'faq :question', :action => :get
-plugin.map 'faq  get :question', :action => :get
+plugin.map 'faq get :question', :action => :get
+
 plugin.default_auth('faq::admin', false)

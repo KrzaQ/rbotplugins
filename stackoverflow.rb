@@ -32,7 +32,7 @@ class StackOverflow < Plugin
 
 		@done = false
 
-		@status = :on
+		@status = :off
 	end
 
 	def start_timer
@@ -44,8 +44,8 @@ class StackOverflow < Plugin
 	end
 
 	def cleanup
-		@bot.say '#4programmers', 'so cleanup = done'
 		@done = true
+		super
 	end
 
 	def refresh
@@ -75,8 +75,6 @@ class StackOverflow < Plugin
 	end
 
 	def is_wanted_question(q)
-
-		# p q['title']
 		return false if q['tags'].include? 'cocos2d'
 		return false if q['tags'].include? 'android'
 
@@ -114,7 +112,6 @@ class StackOverflow < Plugin
 			topic: "#{Bold}#{Irc.color(:teal)}%{title}#{Irc.color}#{Bold}" % { title: CGI.unescapeHTML(el['title']) },
 			url: "#{Irc.color(:red)}%{link}#{Irc.color}" % { link: el['link'].sub(/(https?:\/\/stackoverflow.com\/questions\/\d+\/).+/, '\1') },
 			tags: "(#{Irc.color(:darkgray)}%s#{Irc.color})" % el['tags'].join(', '),
-			# forum: "#{Bold}#{Irc.color(:darkgray)}[%{forum}]#{Irc.color}#{Bold}" % el
 			forum: "[SO]",
 			rep: "(#{Irc.color(:darkgray)}Rep: %s#{Irc.color})" % el['owner']['reputation']
 		}
