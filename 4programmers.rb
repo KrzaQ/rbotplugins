@@ -3,13 +3,13 @@ require 'httpclient'
 require 'cgi'
 
 class FourPLister < Plugin
-	
-	@@link = 'https://4programmers.net/api/topic.php?key=%{api_key}&start_id=%{last_id}'
+
+	@@link = 'https://api.4programmers.net/v1/topics'
 
 	Config.register Config::FloatValue.new 'fourplister.refresh_delay',
 		default: 1.0,
 		desc: 'Refresh delay'
-	
+
 	Config.register Config::ArrayValue.new 'fourplister.sought_tags',
 		default: ['c++', 'cpp',  'c', 'ruby', 'd', 'qt', 'asm'],
 		desc: 'Tags'
@@ -40,14 +40,14 @@ class FourPLister < Plugin
 	end
 
 	def cleanup
-		@bot.say '#4programmers', '4programmers cleanup = done'
 		@done = true
+		super
 	end
 
 	def start_timer
 		return if @done
 		@timer = @bot.timer.add_once(@bot.config['fourplister.refresh_delay'].to_f){
-			start_timer
+			start_timer unless @done
 		}
 		refresh
 	end
@@ -59,25 +59,35 @@ class FourPLister < Plugin
 			last_id: @registry['last_id']
 		})
 		d = JSON.parse(raw, symbolize_names: true)
-		
-		topics = d.select{ |el|
-			t = (el[:tags] & @bot.config['fourplister.sought_tags']).size > 0
-			f = @bot.config['fourplister.sought_fora'].include? el[:forum]
-			#p = @bot.config['fourplister.sought_phrases'].include? el['forum']
+
+		topics = d[:data].select do |el|
+			t = (
+				el[:tags].map{ |t| t[:name] } &
+				@bot.config['fourplister.sought_tags']
+			).size > 0
+
+			f = @bot.config['fourplister.sought_fora'].include? el[:forum][:name]
 			t || f
-		}.map{ |el|
-			el[:subject] = CGI.unescapeHTML el[:subject]
-			el
-		}.sort{ |a,b|
-			a[:post_id] <=> b[:post_id]
-		}
-		
+		end.reverse.map do |el|
+			{
+				topic_id: el[:id],
+				topic_url: el[:url],
+				first_post_id: el[:first_post_id],
+				subject: el[:subject],
+				forum: el[:forum][:name],
+				tags: el[:tags].map{ |t| t[:name] },
+			}
+		end.reject do |el|
+			el[:topic_id] <= @registry['last_id'].to_i
+		end
+
 		topics.each do |el|
 			notify_channels el
+			warn el.inspect
 		end
 
 		@registry['last_topic'] = topics.last unless topics.size < 1
-		@registry['last_id'] = d.map{ |el| el[:topic_id] }.max unless d.size < 1
+		@registry['last_id'] = topics.map{ |el| el[:topic_id] }.max unless topics.size < 1
 		@registry.flush
 	end
 
@@ -85,7 +95,7 @@ class FourPLister < Plugin
 		p el
 		parts = {
 			topic: "#{Bold}#{Irc.color(:green)}%{subject}#{Irc.color}#{Bold}" % el,
-			url: "#{Irc.color(:red)}https://4programmers.net/Forum/%{post_id}#{Irc.color}" % el,
+			url: "#{Irc.color(:red)}https://4programmers.net/Forum/%{first_post_id}#{Irc.color}" % el,
 			tags: "(#{Irc.color(:darkgray)}%s#{Irc.color})" % el[:tags].join(', '),
 			forum: "#{Bold}#{Irc.color(:darkgray)}[%{forum}]#{Irc.color}#{Bold}" % el
 		}
