@@ -468,12 +468,19 @@ class Covid < Plugin
 
     def format_time ts
         diff = Time.now - Time.at(ts/1000)
-        if diff > 48 * 3600
-            "#{(diff.to_f / 86400).round 2} days"
-        elsif diff > 5400
-            "#{(diff.to_f / 3600).round 2} hours"
+        diff = diff.to_i
+        if diff > 24 * 3600
+            d = diff/86400
+            h = diff/3600%24
+            "#{d}d #{h}h"
+        elsif diff > 3600
+            h = diff/3600
+            m = diff/60%60
+            "#{h}h #{m}m"
         else
-            "#{(diff.to_f / 60).round 1} minutes"
+            m = diff/60
+            s = diff%60
+            "#{m}m #{s}s"
         end
     end
 
